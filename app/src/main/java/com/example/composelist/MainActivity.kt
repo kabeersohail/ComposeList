@@ -1,6 +1,7 @@
 package com.example.composelist
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Resources
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.TextUtils
@@ -26,12 +27,14 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.core.text.util.LinkifyCompat
 import com.example.composelist.ui.theme.ComposeListTheme
 
@@ -40,7 +43,8 @@ data class BroadcastMessage(
     val message: String
 )
 
-const val loremIpsum = "\"Sed ut perspiciatis unde omnis iste natus www.netflix.com  error sit voluptatem accusantium doloremque www.google.com laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo www.amazonprime.com enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?\"\n" + "\n"
+const val loremIpsum =
+    "Hello This is a text containing a lot of links including www.google.com, www.netflix.com, www.gmail.com, www.amazonprime.com etc..."
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +63,7 @@ private fun MyApp(modifier: Modifier = Modifier) {
     var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
 
     Surface(modifier, color = colorResource(id = R.color.gray_100)) {
-        if(shouldShowOnboarding) {
+        if (shouldShowOnboarding) {
             OnBoardingScreen(onContinueClicked = { shouldShowOnboarding = false })
         } else {
             Greetings()
@@ -104,16 +108,18 @@ private fun Greeting(broadcastMessage: BroadcastMessage) {
 private fun CardContent(broadcastMessage: BroadcastMessage) {
     val expanded = rememberSaveable { mutableStateOf(false) }
 
-    
-    Row(modifier = Modifier
-        .background(colorResource(id = R.color.gray_200))
-        .padding(12.dp)
-        .animateContentSize(
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioLowBouncy,
-                stiffness = Spring.StiffnessMediumLow
+
+    Row(
+        modifier = Modifier
+            .background(colorResource(id = R.color.gray_200))
+            .padding(12.dp)
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioLowBouncy,
+                    stiffness = Spring.StiffnessMediumLow
+                )
             )
-        )) {
+    ) {
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -124,7 +130,10 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
             val titleView = remember {
                 TextView(mContext)
             }
+
             AndroidView(factory = { titleView }) { broadcastTitle ->
+                broadcastTitle.background = mContext.getDrawable(R.drawable.lite_gray_rectangle)
+                broadcastTitle.setPadding(24, 0, 24, 0)
                 broadcastTitle.text = broadcastMessage.title
                 broadcastTitle.textSize = 30F
                 broadcastTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
@@ -138,24 +147,30 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
             }
 
             AndroidView(factory = { messageView }) { textView ->
+//                textView.background = mContext.getDrawable(R.drawable.lite_gray_rectangle)
+                textView.setPadding(24, 24, 24, 24)
                 textView.text = broadcastMessage.message
                 LinkifyCompat.addLinks(textView, Linkify.WEB_URLS)
                 textView.textSize = 18F
                 textView.setLinkTextColor(mContext.resources.getColor(R.color.link_gray))
                 textView.movementMethod = LinkMovementMethod.getInstance()
-                textView.maxLines = if(expanded.value) Int.MAX_VALUE else 3
+                textView.maxLines = if (expanded.value) Int.MAX_VALUE else 3
                 textView.setTextColor(mContext.resources.getColor(R.color.message_text_color))
             }
 
 //            Text(text = broadcastMessage.message, color = colorResource(id = R.color.text_gray), maxLines = if(expanded.value) Int.MAX_VALUE else 3)
-            
+
         }
         IconButton(onClick = { expanded.value = !expanded.value }) {
-            Icon(imageVector = if(expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = if(expanded.value) {
-                stringResource(id = R.string.show_less)
-            } else {
-                stringResource(id = R.string.show_more)
-            })
+            Icon(
+                imageVector = if (expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                contentDescription = if (expanded.value) {
+                    stringResource(id = R.string.show_less)
+                } else {
+                    stringResource(id = R.string.show_more)
+                },
+                tint = Color.LightGray
+            )
         }
     }
 }
@@ -165,7 +180,10 @@ private fun Greetings(
     modifier: Modifier = Modifier,
     broadcastMessages: List<BroadcastMessage> = listOf(
         BroadcastMessage("Title is very very very very long title", loremIpsum),
-        BroadcastMessage("Title 2", loremIpsum),
+        BroadcastMessage(
+            "This is based on text length, just need to check what is the max value before it allows marquee",
+            loremIpsum
+        ),
         BroadcastMessage("Title 3", loremIpsum),
         BroadcastMessage("Title 4", loremIpsum),
         BroadcastMessage("Title 5", loremIpsum),
@@ -179,7 +197,7 @@ private fun Greetings(
             .padding(vertical = 4.dp)
             .background(colorResource(id = R.color.gray_100)),
     ) {
-        items (items = broadcastMessages) { broadcastMessage ->
+        items(items = broadcastMessages) { broadcastMessage ->
             Greeting(broadcastMessage = broadcastMessage)
         }
     }
