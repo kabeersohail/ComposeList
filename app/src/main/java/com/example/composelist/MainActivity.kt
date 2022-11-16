@@ -109,7 +109,7 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
 
     Row(
         modifier = Modifier
-            .background(colorResource(id = R.color.gray_200))
+            .background(colorResource(id = R.color.gray_100))
             .animateContentSize(
                 animationSpec = spring(
                     dampingRatio = Spring.DampingRatioLowBouncy,
@@ -144,7 +144,7 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
                         broadcastTitle.setPadding(24, 0, 24, 0)
                         broadcastTitle.text = broadcastMessage.title
                         broadcastTitle.textSize = 30F
-                        broadcastTitle.setBackgroundColor(ContextCompat.getColor(mContext, R.color.text_background))
+                        broadcastTitle.setBackgroundColor(ContextCompat.getColor(mContext, R.color.gray_200))
                         broadcastTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
                         broadcastTitle.isSingleLine = true
                         broadcastTitle.marqueeRepeatLimit = -1
@@ -180,7 +180,7 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
                     textView.gravity = Gravity.FILL
                     LinkifyCompat.addLinks(textView, Linkify.WEB_URLS)
                     textView.textSize = 18F
-                    textView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.text_background))
+                    textView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.gray_200))
                     textView.setLinkTextColor(ContextCompat.getColor(mContext, R.color.link_gray))
                     textView.movementMethod = LinkMovementMethod.getInstance()
                     textView.maxLines = if (expanded.value) Int.MAX_VALUE else 3
@@ -209,7 +209,7 @@ private fun Greetings(
     LazyColumn(
         modifier = modifier
             .padding(vertical = 4.dp)
-            .background(colorResource(id = R.color.gray_100)),
+            .background(Color.Black)
     ) {
         items(items = broadcastMessages) { broadcastMessage ->
             Greeting(broadcastMessage = broadcastMessage)
