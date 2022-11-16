@@ -1,6 +1,5 @@
 package com.example.composelist
 
-import android.app.ActionBar.LayoutParams
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.graphics.Typeface
 import android.os.Bundle
@@ -9,8 +8,6 @@ import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -135,20 +132,23 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                AndroidView(factory = { titleView }) { broadcastTitle ->
+
+                Surface(modifier = Modifier.weight(1F, false)) {
+                    AndroidView(factory = { titleView }) { broadcastTitle ->
                     broadcastTitle.background = mContext.getDrawable(R.drawable.lite_gray_rectangle)
-                    broadcastTitle.setPadding(24, 0, 24, 0)
-                    broadcastTitle.text = broadcastMessage.title
-                    broadcastTitle.textSize = 30F
-                    broadcastTitle.textAlignment = View.TEXT_ALIGNMENT_CENTER
-                    broadcastTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
-                    broadcastTitle.isSingleLine = true
-                    broadcastTitle.marqueeRepeatLimit = -1
-                    broadcastTitle.setOnClickListener {
-                        broadcastTitle.isSelected = !broadcastTitle.isSelected
+                        broadcastTitle.setPadding(24, 0, 24, 0)
+                        broadcastTitle.text = broadcastMessage.title
+                        broadcastTitle.textSize = 30F
+//                        broadcastTitle.setBackgroundColor(mContext.resources.getColor(R.color.gray_100))
+                        broadcastTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
+                        broadcastTitle.isSingleLine = true
+                        broadcastTitle.marqueeRepeatLimit = -1
+                        broadcastTitle.setOnClickListener {
+                            broadcastTitle.isSelected = !broadcastTitle.isSelected
+                        }
+                        broadcastTitle.typeface = Typeface.DEFAULT_BOLD
+                        broadcastTitle.setTextColor(mContext.resources.getColor(R.color.title_text_color))
                     }
-                    broadcastTitle.typeface = Typeface.DEFAULT_BOLD
-                    broadcastTitle.setTextColor(mContext.resources.getColor(R.color.title_text_color))
                 }
 
                 IconButton(onClick = { expanded.value = !expanded.value }) {
@@ -187,13 +187,13 @@ private fun Greetings(
     modifier: Modifier = Modifier,
     broadcastMessages: List<BroadcastMessage> = listOf(
         BroadcastMessage("This is my title", "This is my message"),
-        BroadcastMessage("This is my very long ti", "This is my very long message with a lot of links like www.netflix.com, www.google.com, www.amazonprime.com"),
-        BroadcastMessage("", ""),
-        BroadcastMessage("", ""),
-        BroadcastMessage("", ""),
-        BroadcastMessage("", ""),
-        BroadcastMessage("", ""),
-        BroadcastMessage("", "")
+        BroadcastMessage("This is my very long title sfsd fds ds", "This is my very long message with a lot of links like www.netflix.com, www.google.com, www.amazonprime.com"),
+        BroadcastMessage("dsfsdf", ""),
+        BroadcastMessage("dsfsdf fds ", ""),
+        BroadcastMessage("dsfsd sdf ds  fs ds d", ""),
+        BroadcastMessage("dsfsd dsf dsf d", ""),
+        BroadcastMessage("dsfds dfs", ""),
+        BroadcastMessage("dsfds", "")
 
     )
 ) {
