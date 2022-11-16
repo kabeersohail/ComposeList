@@ -9,6 +9,8 @@ import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -133,10 +135,8 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                AndroidView(factory = { titleView }, modifier = Modifier
-                    .fillMaxWidth(0.8F).weight(0.8F, false)) { broadcastTitle ->
+                AndroidView(factory = { titleView }) { broadcastTitle ->
                     broadcastTitle.background = mContext.getDrawable(R.drawable.lite_gray_rectangle)
-                    broadcastTitle.width = LayoutParams.WRAP_CONTENT
                     broadcastTitle.setPadding(24, 0, 24, 0)
                     broadcastTitle.text = broadcastMessage.title
                     broadcastTitle.textSize = 30F
@@ -187,7 +187,7 @@ private fun Greetings(
     modifier: Modifier = Modifier,
     broadcastMessages: List<BroadcastMessage> = listOf(
         BroadcastMessage("This is my title", "This is my message"),
-        BroadcastMessage("This is my very long title", "This is my very long message with a lot of links like www.netflix.com, www.google.com, www.amazonprime.com"),
+        BroadcastMessage("This is my very long ti", "This is my very long message with a lot of links like www.netflix.com, www.google.com, www.amazonprime.com"),
         BroadcastMessage("", ""),
         BroadcastMessage("", ""),
         BroadcastMessage("", ""),
