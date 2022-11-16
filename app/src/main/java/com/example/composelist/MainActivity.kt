@@ -1,12 +1,14 @@
 package com.example.composelist
 
+import android.app.ActionBar.LayoutParams
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.content.res.Resources
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
+import android.view.Gravity
+import android.view.View
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,7 +36,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
 import androidx.core.text.util.LinkifyCompat
 import com.example.composelist.ui.theme.ComposeListTheme
 
@@ -42,9 +43,6 @@ data class BroadcastMessage(
     val title: String,
     val message: String
 )
-
-const val loremIpsum =
-    "Hello This is a text containing a lot of links including www.google.com, www.netflix.com, www.gmail.com, www.amazonprime.com etc..."
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +62,7 @@ private fun MyApp(modifier: Modifier = Modifier) {
 
     Surface(modifier, color = colorResource(id = R.color.gray_100)) {
         if (shouldShowOnboarding) {
-            OnBoardingScreen(onContinueClicked = { shouldShowOnboarding = false })
+            OnBoardingScreen { shouldShowOnboarding = false }
         } else {
             Greetings()
         }
@@ -73,17 +71,16 @@ private fun MyApp(modifier: Modifier = Modifier) {
 
 @Composable
 fun OnBoardingScreen(
-    onContinueClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    onContinueClicked: () -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Welcome to basics code labs")
         Button(
-            modifier = Modifier.padding(vertical = 24.dp),
+            modifier = Modifier.padding(24.dp),
             onClick = onContinueClicked
         ) {
             Text(text = "Continue")
@@ -112,7 +109,6 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
     Row(
         modifier = Modifier
             .background(colorResource(id = R.color.gray_200))
-            .padding(12.dp)
             .animateContentSize(
                 animationSpec = spring(
                     dampingRatio = Spring.DampingRatioLowBouncy,
@@ -124,6 +120,7 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
             modifier = Modifier
                 .weight(1f)
                 .padding(12.dp)
+                .fillMaxWidth()
         ) {
             val mContext = LocalContext.current
             val messageView = remember { TextView(mContext) }
@@ -131,25 +128,49 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
                 TextView(mContext)
             }
 
-            AndroidView(factory = { titleView }) { broadcastTitle ->
-                broadcastTitle.background = mContext.getDrawable(R.drawable.lite_gray_rectangle)
-                broadcastTitle.setPadding(24, 0, 24, 0)
-                broadcastTitle.text = broadcastMessage.title
-                broadcastTitle.textSize = 30F
-                broadcastTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
-                broadcastTitle.isSingleLine = true
-                broadcastTitle.marqueeRepeatLimit = -1
-                broadcastTitle.setOnClickListener {
-                    broadcastTitle.isSelected = !broadcastTitle.isSelected
+            Row(modifier = Modifier
+                .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                AndroidView(factory = { titleView }, modifier = Modifier
+                    .fillMaxWidth(0.8F).weight(0.8F, false)) { broadcastTitle ->
+                    broadcastTitle.background = mContext.getDrawable(R.drawable.lite_gray_rectangle)
+                    broadcastTitle.width = LayoutParams.WRAP_CONTENT
+                    broadcastTitle.setPadding(24, 0, 24, 0)
+                    broadcastTitle.text = broadcastMessage.title
+                    broadcastTitle.textSize = 30F
+                    broadcastTitle.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                    broadcastTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
+                    broadcastTitle.isSingleLine = true
+                    broadcastTitle.marqueeRepeatLimit = -1
+                    broadcastTitle.setOnClickListener {
+                        broadcastTitle.isSelected = !broadcastTitle.isSelected
+                    }
+                    broadcastTitle.typeface = Typeface.DEFAULT_BOLD
+                    broadcastTitle.setTextColor(mContext.resources.getColor(R.color.title_text_color))
                 }
-                broadcastTitle.typeface = Typeface.DEFAULT_BOLD
-                broadcastTitle.setTextColor(mContext.resources.getColor(R.color.title_text_color))
+
+                IconButton(onClick = { expanded.value = !expanded.value }) {
+                    Icon(
+                        imageVector = if (expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                        contentDescription = if (expanded.value) {
+                            stringResource(id = R.string.show_less)
+                        } else {
+                            stringResource(id = R.string.show_more)
+                        },
+                        tint = Color.LightGray
+                    )
+                }
+
             }
 
-            AndroidView(factory = { messageView }) { textView ->
-//                textView.background = mContext.getDrawable(R.drawable.lite_gray_rectangle)
-                textView.setPadding(24, 24, 24, 24)
+            AndroidView(factory = { messageView }, modifier = Modifier
+                .fillMaxWidth()) { textView ->
+                textView.background = mContext.getDrawable(R.drawable.lite_gray_rectangle)
+                textView.setPadding(24, 0, 0, 24)
                 textView.text = broadcastMessage.message
+                textView.gravity = Gravity.FILL
                 LinkifyCompat.addLinks(textView, Linkify.WEB_URLS)
                 textView.textSize = 18F
                 textView.setLinkTextColor(mContext.resources.getColor(R.color.link_gray))
@@ -157,20 +178,6 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
                 textView.maxLines = if (expanded.value) Int.MAX_VALUE else 3
                 textView.setTextColor(mContext.resources.getColor(R.color.message_text_color))
             }
-
-//            Text(text = broadcastMessage.message, color = colorResource(id = R.color.text_gray), maxLines = if(expanded.value) Int.MAX_VALUE else 3)
-
-        }
-        IconButton(onClick = { expanded.value = !expanded.value }) {
-            Icon(
-                imageVector = if (expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                contentDescription = if (expanded.value) {
-                    stringResource(id = R.string.show_less)
-                } else {
-                    stringResource(id = R.string.show_more)
-                },
-                tint = Color.LightGray
-            )
         }
     }
 }
@@ -179,17 +186,15 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
 private fun Greetings(
     modifier: Modifier = Modifier,
     broadcastMessages: List<BroadcastMessage> = listOf(
-        BroadcastMessage("Title is very very very very long title", loremIpsum),
-        BroadcastMessage(
-            "This is based on text length, just need to check what is the max value before it allows marquee",
-            loremIpsum
-        ),
-        BroadcastMessage("Title 3", loremIpsum),
-        BroadcastMessage("Title 4", loremIpsum),
-        BroadcastMessage("Title 5", loremIpsum),
-        BroadcastMessage("Title 6", loremIpsum),
-        BroadcastMessage("Title 7", loremIpsum),
-        BroadcastMessage("Title 8", loremIpsum),
+        BroadcastMessage("This is my title", "This is my message"),
+        BroadcastMessage("This is my very long title", "This is my very long message with a lot of links like www.netflix.com, www.google.com, www.amazonprime.com"),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", "")
+
     )
 ) {
     LazyColumn(
@@ -214,6 +219,20 @@ private fun Greetings(
 private fun GreetingsPreview() {
     ComposeListTheme {
         Greetings()
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 320,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "Dark"
+)
+@Preview(showBackground = true, widthDp = 320)
+@Composable
+private fun CardPreview() {
+    ComposeListTheme {
+        CardContent(BroadcastMessage("",""))
     }
 }
 
