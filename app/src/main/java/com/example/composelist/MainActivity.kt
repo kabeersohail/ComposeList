@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.core.text.util.LinkifyCompat
 import com.example.composelist.ui.theme.ComposeListTheme
 
@@ -143,7 +144,7 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
                         broadcastTitle.setPadding(24, 0, 24, 0)
                         broadcastTitle.text = broadcastMessage.title
                         broadcastTitle.textSize = 30F
-                        broadcastTitle.setBackgroundColor(mContext.resources.getColor(R.color.text_background))
+                        broadcastTitle.setBackgroundColor(ContextCompat.getColor(mContext, R.color.text_background))
                         broadcastTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
                         broadcastTitle.isSingleLine = true
                         broadcastTitle.marqueeRepeatLimit = -1
@@ -151,7 +152,7 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
                             broadcastTitle.isSelected = !broadcastTitle.isSelected
                         }
                         broadcastTitle.typeface = Typeface.DEFAULT_BOLD
-                        broadcastTitle.setTextColor(mContext.resources.getColor(R.color.title_text_color))
+                        broadcastTitle.setTextColor(ContextCompat.getColor(mContext, R.color.title_text_color))
                     }
                 }
 
@@ -174,16 +175,16 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
             ) {
                 AndroidView(factory = { messageView }, modifier = Modifier
                     .fillMaxWidth()) { textView ->
-                    textView.setPadding(24, 0, 0, 24)
+                    textView.setPadding(24, 0, 0, if(expanded.value) 500 else 24)
                     textView.text = broadcastMessage.message
                     textView.gravity = Gravity.FILL
                     LinkifyCompat.addLinks(textView, Linkify.WEB_URLS)
                     textView.textSize = 18F
-                    textView.setBackgroundColor(mContext.resources.getColor(R.color.text_background))
-                    textView.setLinkTextColor(mContext.resources.getColor(R.color.link_gray))
+                    textView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.text_background))
+                    textView.setLinkTextColor(ContextCompat.getColor(mContext, R.color.link_gray))
                     textView.movementMethod = LinkMovementMethod.getInstance()
                     textView.maxLines = if (expanded.value) Int.MAX_VALUE else 3
-                    textView.setTextColor(mContext.resources.getColor(R.color.message_text_color))
+                    textView.setTextColor(ContextCompat.getColor(mContext, R.color.message_text_color))
                 }
             }
         }
