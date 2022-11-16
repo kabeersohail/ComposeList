@@ -7,7 +7,6 @@ import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.view.Gravity
-import android.view.View
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -130,12 +129,16 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
             }
 
             Row(modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-                Surface(modifier = Modifier.weight(1F, false).clip(RoundedCornerShape(10.dp))) {
+                Surface(modifier = Modifier
+                    .weight(1F, false)
+                    .widthIn(150.dp)
+                    .clip(RoundedCornerShape(10.dp))) {
                     AndroidView(factory = { titleView }) { broadcastTitle ->
                         broadcastTitle.setPadding(24, 0, 24, 0)
                         broadcastTitle.text = broadcastMessage.title
@@ -166,18 +169,22 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
 
             }
 
-            AndroidView(factory = { messageView }, modifier = Modifier
-                .fillMaxWidth()) { textView ->
-                textView.background = mContext.getDrawable(R.drawable.lite_gray_rectangle)
-                textView.setPadding(24, 0, 0, 24)
-                textView.text = broadcastMessage.message
-                textView.gravity = Gravity.FILL
-                LinkifyCompat.addLinks(textView, Linkify.WEB_URLS)
-                textView.textSize = 18F
-                textView.setLinkTextColor(mContext.resources.getColor(R.color.link_gray))
-                textView.movementMethod = LinkMovementMethod.getInstance()
-                textView.maxLines = if (expanded.value) Int.MAX_VALUE else 3
-                textView.setTextColor(mContext.resources.getColor(R.color.message_text_color))
+            Surface(
+                modifier = Modifier.clip(RoundedCornerShape(10.dp))
+            ) {
+                AndroidView(factory = { messageView }, modifier = Modifier
+                    .fillMaxWidth()) { textView ->
+                    textView.setPadding(24, 0, 0, 24)
+                    textView.text = broadcastMessage.message
+                    textView.gravity = Gravity.FILL
+                    LinkifyCompat.addLinks(textView, Linkify.WEB_URLS)
+                    textView.textSize = 18F
+                    textView.setBackgroundColor(mContext.resources.getColor(R.color.text_background))
+                    textView.setLinkTextColor(mContext.resources.getColor(R.color.link_gray))
+                    textView.movementMethod = LinkMovementMethod.getInstance()
+                    textView.maxLines = if (expanded.value) Int.MAX_VALUE else 3
+                    textView.setTextColor(mContext.resources.getColor(R.color.message_text_color))
+                }
             }
         }
     }
@@ -187,14 +194,14 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
 private fun Greetings(
     modifier: Modifier = Modifier,
     broadcastMessages: List<BroadcastMessage> = listOf(
-        BroadcastMessage("This is my title", "This is my message"),
-        BroadcastMessage("This is my very long title sfsd fds ds", "This is my very long message with a lot of links like www.netflix.com, www.google.com, www.amazonprime.com"),
-        BroadcastMessage("dsfsdf", ""),
-        BroadcastMessage("dsfsdf fds ", ""),
-        BroadcastMessage("dsfsd sdf ds  fs ds d", ""),
-        BroadcastMessage("dsfsd dsf dsf d", ""),
-        BroadcastMessage("dsfds dfs", ""),
-        BroadcastMessage("dsfds", "")
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", "")
 
     )
 ) {
