@@ -138,7 +138,7 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
 
                 Surface(modifier = Modifier
                     .weight(1F, false)
-                    .widthIn(150.dp)
+//                    .widthIn(150.dp)
                     .clip(RoundedCornerShape(10.dp))) {
                     AndroidView(factory = { titleView }) { broadcastTitle ->
                         broadcastTitle.setPadding(24, 0, 24, 0)
@@ -175,7 +175,7 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
             ) {
                 AndroidView(factory = { messageView }, modifier = Modifier
                     .fillMaxWidth()) { textView ->
-                    textView.setPadding(24, 0, 0, if(expanded.value) 500 else 24)
+                    textView.setPadding(24, 0, 0, 24)
                     textView.text = broadcastMessage.message
                     textView.gravity = Gravity.FILL
                     LinkifyCompat.addLinks(textView, Linkify.WEB_URLS)
