@@ -17,6 +17,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -39,6 +40,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.text.util.LinkifyCompat
 import com.example.composelist.ui.theme.ComposeListTheme
+import com.example.composelist.ui.theme.Navy
 
 data class BroadcastMessage(
     val title: String,
@@ -138,7 +140,7 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
 
                 Surface(modifier = Modifier
                     .weight(1F, false)
-//                    .widthIn(150.dp)
+                    .widthIn(150.dp)
                     .clip(RoundedCornerShape(10.dp))) {
                     AndroidView(factory = { titleView }) { broadcastTitle ->
                         broadcastTitle.setPadding(24, 0, 24, 0)
@@ -156,7 +158,8 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
                     }
                 }
 
-                IconButton(onClick = { expanded.value = !expanded.value }) {
+                OutlinedButton(onClick = { expanded.value = !expanded.value }, shape = CircleShape,
+                colors = ButtonDefaults.outlinedButtonColors(backgroundColor =  colorResource(id = R.color.gray_200))) {
                     Icon(
                         imageVector = if (expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
                         contentDescription = if (expanded.value) {
@@ -164,7 +167,7 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
                         } else {
                             stringResource(id = R.string.show_more)
                         },
-                        tint = Color.LightGray
+                        tint = colorResource(id = R.color.link_gray)
                     )
                 }
 
@@ -175,7 +178,7 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
             ) {
                 AndroidView(factory = { messageView }, modifier = Modifier
                     .fillMaxWidth()) { textView ->
-                    textView.setPadding(24, 0, 0, 24)
+                    textView.setPadding(24, 0, 0, if(expanded.value) 400 else 24)
                     textView.text = broadcastMessage.message
                     textView.gravity = Gravity.FILL
                     LinkifyCompat.addLinks(textView, Linkify.WEB_URLS)
@@ -195,14 +198,14 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
 private fun Greetings(
     modifier: Modifier = Modifier,
     broadcastMessages: List<BroadcastMessage> = listOf(
-        BroadcastMessage("Exam alert", "Please click on the following link to start exam -> www.google.com, For any quires please post to www.twitter.com"),
-        BroadcastMessage("Update alert", "Please update the device using following link www.netflix.com, for any quires please click on following link www.amazonprime.com"),
-        BroadcastMessage("This is a long title", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"),
-        BroadcastMessage("This is very very long title to enable marquee", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"),
-        BroadcastMessage("Title 2", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"),
-        BroadcastMessage("Title 4", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"),
-        BroadcastMessage("Title 5", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"),
-        BroadcastMessage("Title 7", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum")
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", ""),
+        BroadcastMessage("", "")
 
     )
 ) {
