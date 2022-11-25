@@ -4,9 +4,8 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.TextUtils
-import android.text.method.LinkMovementMethod
-import android.text.util.Linkify
-import android.view.Gravity
+import android.webkit.WebChromeClient
+import android.webkit.WebView
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -35,12 +34,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.core.text.util.LinkifyCompat
+import com.example.composelist.Constants.ENCODING
+import com.example.composelist.Constants.HTML_TAGS
+import com.example.composelist.Constants.IMAGE_TAG
+import com.example.composelist.Constants.LINKS
+import com.example.composelist.Constants.LLLL
+import com.example.composelist.Constants.MIME_TYPE
+import com.example.composelist.Constants.SAMPLE_HTML_ONE
+import com.example.composelist.Constants.SAMPLE_HTML_THREE
+import com.example.composelist.Constants.SAMPLE_HTML_TWO
 import com.example.composelist.ui.theme.ComposeListTheme
-import com.example.composelist.ui.theme.Navy
 
 data class BroadcastMessage(
     val title: String,
@@ -126,7 +133,7 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
                 .fillMaxWidth()
         ) {
             val mContext = LocalContext.current
-            val messageView = remember { TextView(mContext) }
+            val webView = remember { WebView(mContext) }
             val titleView = remember {
                 TextView(mContext)
             }
@@ -140,7 +147,6 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
 
                 Surface(modifier = Modifier
                     .weight(1F, false)
-                    .widthIn(150.dp)
                     .clip(RoundedCornerShape(10.dp))) {
                     AndroidView(factory = { titleView }) { broadcastTitle ->
                         broadcastTitle.setPadding(24, 0, 24, 0)
@@ -170,25 +176,31 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
                         tint = colorResource(id = R.color.link_gray)
                     )
                 }
-
             }
 
             Surface(
-                modifier = Modifier.clip(RoundedCornerShape(10.dp))
+                modifier = Modifier.clip(RoundedCornerShape(10.dp)).height(
+                    if(expanded.value) Dp.Infinity else 200.dp
+                )
             ) {
-                AndroidView(factory = { messageView }, modifier = Modifier
-                    .fillMaxWidth()) { textView ->
-                    textView.setPadding(24, 0, 0, if(expanded.value) 400 else 24)
-                    textView.text = broadcastMessage.message
-                    textView.gravity = Gravity.FILL
-                    LinkifyCompat.addLinks(textView, Linkify.WEB_URLS)
-                    textView.textSize = 18F
-                    textView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.gray_200))
-                    textView.setLinkTextColor(ContextCompat.getColor(mContext, R.color.link_gray))
-                    textView.movementMethod = LinkMovementMethod.getInstance()
-                    textView.maxLines = if (expanded.value) Int.MAX_VALUE else 3
-                    textView.setTextColor(ContextCompat.getColor(mContext, R.color.message_text_color))
+                AndroidView(factory = { webView }, modifier = Modifier
+                    .fillMaxWidth()) { webView ->
+                    webView.loadData(broadcastMessage.message, MIME_TYPE , ENCODING)
                 }
+                
+                webView.webChromeClient = WebChromeClient()
+
+//                webView.webViewClient = object: WebViewClient() {
+//                    override fun shouldOverrideUrlLoading(
+//                        view: WebView?,
+//                        request: WebResourceRequest?
+//                    ): Boolean {
+//                        return false
+//                    }
+//                }
+
+//                webView.settings.javaScriptEnabled = true
+
             }
         }
     }
@@ -198,15 +210,13 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
 private fun Greetings(
     modifier: Modifier = Modifier,
     broadcastMessages: List<BroadcastMessage> = listOf(
-        BroadcastMessage("", ""),
-        BroadcastMessage("", ""),
-        BroadcastMessage("", ""),
-        BroadcastMessage("", ""),
-        BroadcastMessage("", ""),
-        BroadcastMessage("", ""),
-        BroadcastMessage("", ""),
-        BroadcastMessage("", "")
-
+        BroadcastMessage("TAG 1", SAMPLE_HTML_ONE),
+        BroadcastMessage("TAG 2", SAMPLE_HTML_TWO),
+        BroadcastMessage("TAG 3", SAMPLE_HTML_THREE),
+        BroadcastMessage("TAG 4", IMAGE_TAG),
+        BroadcastMessage("TAG 5", HTML_TAGS),
+        BroadcastMessage("TAG 6", LINKS),
+        BroadcastMessage("TAG 7",LLLL)
     )
 ) {
     LazyColumn(
