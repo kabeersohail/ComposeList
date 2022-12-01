@@ -27,6 +27,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -34,7 +35,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -59,22 +59,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposeListTheme {
-                MyApp()
+                Greetings()
             }
-        }
-    }
-}
-
-@Composable
-private fun MyApp(modifier: Modifier = Modifier) {
-
-    var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
-
-    Surface(modifier, color = colorResource(id = R.color.gray_100)) {
-        if (shouldShowOnboarding) {
-            OnBoardingScreen { shouldShowOnboarding = false }
-        } else {
-            Greetings()
         }
     }
 }
@@ -125,6 +111,7 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
                 )
             )
     ) {
+
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -179,7 +166,9 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
 
             if(expanded.value) {
                 Surface(
-                    modifier = Modifier.clip(RoundedCornerShape(10.dp)).wrapContentHeight()
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .wrapContentHeight()
                 ) {
                     AndroidView(factory = { webView }, modifier = Modifier
                         .fillMaxWidth()) { webView ->
@@ -191,6 +180,15 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
             }
         }
     }
+
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .background(color = colorResource(id = R.color.gray_100))) {
+        Text(text = "Message delivered time", modifier = Modifier.align(CenterHorizontally), color = colorResource(
+            id = R.color.title_text_color
+        ))
+    }
+
 }
 
 @Composable
