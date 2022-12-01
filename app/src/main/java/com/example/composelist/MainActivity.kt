@@ -13,6 +13,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,17 +25,24 @@ import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -48,10 +56,14 @@ import com.example.composelist.Constants.SAMPLE_HTML_ONE
 import com.example.composelist.Constants.SAMPLE_HTML_THREE
 import com.example.composelist.Constants.SAMPLE_HTML_TWO
 import com.example.composelist.ui.theme.ComposeListTheme
+import java.text.SimpleDateFormat
+import java.util.*
 
 data class BroadcastMessage(
     val title: String,
-    val message: String
+    val message: String,
+    val time: String =  SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date()),
+    val date: String = SimpleDateFormat("dd/M/yyyy", Locale.getDefault()).format(Date())
 )
 
 class MainActivity : ComponentActivity() {
@@ -100,6 +112,14 @@ private fun Greeting(broadcastMessage: BroadcastMessage) {
 @Composable
 private fun CardContent(broadcastMessage: BroadcastMessage) {
     val expanded = remember { mutableStateOf(false) }
+
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .background(color = colorResource(id = R.color.gray_100))) {
+        Text(text = broadcastMessage.date, modifier = Modifier.align(CenterHorizontally), color = colorResource(
+            id = R.color.title_text_color
+        ))
+    }
 
     Row(
         modifier = Modifier
@@ -184,7 +204,7 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
     Column(modifier = Modifier
         .fillMaxWidth()
         .background(color = colorResource(id = R.color.gray_100))) {
-        Text(text = "Message delivered time", modifier = Modifier.align(CenterHorizontally), color = colorResource(
+        Text(text = broadcastMessage.time, modifier = Modifier.align(CenterHorizontally), color = colorResource(
             id = R.color.title_text_color
         ))
     }
@@ -210,13 +230,19 @@ private fun Greetings(
         BroadcastMessage("TAG 7",LLLL)
     )
 ) {
-    LazyColumn(
-        modifier = modifier
-            .padding(vertical = 4.dp)
-            .background(Color.Black)
+
+    Column(
     ) {
-        items(items = broadcastMessages) { broadcastMessage ->
-            Greeting(broadcastMessage = broadcastMessage)
+        Text(text = broadcastMessages.first().date, modifier = Modifier.align(CenterHorizontally))
+
+        LazyColumn(
+            modifier = modifier
+                .padding(vertical = 4.dp)
+                .background(Color.Black)
+        ) {
+            items(items = broadcastMessages) { broadcastMessage ->
+                Greeting(broadcastMessage = broadcastMessage)
+            }
         }
     }
 }
@@ -248,10 +274,6 @@ private fun CardPreview() {
         CardContent(BroadcastMessage("",""))
     }
 }
-
-
-
-
 
 
 
