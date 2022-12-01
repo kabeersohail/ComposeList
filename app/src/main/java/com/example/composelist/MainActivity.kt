@@ -113,8 +113,7 @@ private fun Greeting(broadcastMessage: BroadcastMessage) {
 
 @Composable
 private fun CardContent(broadcastMessage: BroadcastMessage) {
-    val expanded = rememberSaveable { mutableStateOf(false) }
-
+    val expanded = remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
@@ -178,29 +177,17 @@ private fun CardContent(broadcastMessage: BroadcastMessage) {
                 }
             }
 
-            Surface(
-                modifier = Modifier.clip(RoundedCornerShape(10.dp)).height(
-                    if(expanded.value) Dp.Infinity else 200.dp
-                )
-            ) {
-                AndroidView(factory = { webView }, modifier = Modifier
-                    .fillMaxWidth()) { webView ->
-                    webView.loadData(broadcastMessage.message, MIME_TYPE , ENCODING)
+            if(expanded.value) {
+                Surface(
+                    modifier = Modifier.clip(RoundedCornerShape(10.dp)).wrapContentHeight()
+                ) {
+                    AndroidView(factory = { webView }, modifier = Modifier
+                        .fillMaxWidth()) { webView ->
+                        webView.loadData(broadcastMessage.message, MIME_TYPE , ENCODING)
+                    }
+
+                    webView.webChromeClient = WebChromeClient()
                 }
-                
-                webView.webChromeClient = WebChromeClient()
-
-//                webView.webViewClient = object: WebViewClient() {
-//                    override fun shouldOverrideUrlLoading(
-//                        view: WebView?,
-//                        request: WebResourceRequest?
-//                    ): Boolean {
-//                        return false
-//                    }
-//                }
-
-//                webView.settings.javaScriptEnabled = true
-
             }
         }
     }
@@ -215,6 +202,12 @@ private fun Greetings(
         BroadcastMessage("TAG 3", SAMPLE_HTML_THREE),
         BroadcastMessage("TAG 4", IMAGE_TAG),
         BroadcastMessage("TAG 5", HTML_TAGS),
+        BroadcastMessage("TAG 6", LINKS),
+        BroadcastMessage("TAG 6", LINKS),
+        BroadcastMessage("TAG 6", LINKS),
+        BroadcastMessage("TAG 6", LINKS),
+        BroadcastMessage("TAG 6", LINKS),
+        BroadcastMessage("TAG 6", LINKS),
         BroadcastMessage("TAG 6", LINKS),
         BroadcastMessage("TAG 7",LLLL)
     )
